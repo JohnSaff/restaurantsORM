@@ -97,4 +97,22 @@ describe('restaurant tests',() =>{
             done()
         })
     })
+    test('a menu should have items',async (done) =>{
+        const menu = await new Menu({title:'cocktail'})
+        expect(menu.items.length).toBe(0)
+        await menu.addItem({item:'cosmopolitan',price:5.8})
+        expect(menu.items[0] instanceof Item).toBeTruthy()
+        expect(menu.items[0].id).toBeTruthy()
+        await menu.addItem({item:'espresso martini',price:6.2})
+        await menu.addItem({item:'vodka martini',price:7.6})
+
+
+        db.get('SELECT * FROM menus WHERE id=?',[menu.id],async(err,row) =>{
+            console.log(row)
+            const cocktails = await new Menu(row)
+            expect(cocktails.id).toBe(menu.id)
+            expect(cocktails.items[0] instanceof Item).toBeTruthy()
+            done()
+        })
+    })
 })

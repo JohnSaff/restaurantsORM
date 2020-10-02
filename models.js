@@ -15,10 +15,10 @@ class Restaurant{
             return new Promise((resolve,reject)=>{
                 db.all('SELECT * FROM menus WHERE restaurant_id=?',[restaurant.id],(err,rows) =>{
                     const arrayOfPromises = rows.map(row => new Menu(row))
-                    console.log(arrayOfPromises)
+                    //console.log(arrayOfPromises)
                     Promise.all(arrayOfPromises)
                         .then((menus) =>{
-                            console.log(menus)
+                            //console.log(menus)
                             restaurant.menus = menus
                             resolve(restaurant)
                         }).catch(err=> reject(err))
@@ -53,9 +53,20 @@ class Menu{
         this.id = data.id
         this.title = data.title
         this.restaurant_id = data.restaurant_id
+        this.items = []
 
         if (this.id){
-            return Promise.resolve(this)
+            return new Promise((resolve,reject)=>{
+                db.all('SELECT * FROM items WHERE menu_id=?',[menu.id],(err,rows)=>{
+                    const arrayOfPromises = rows.map(row => new Item(row))
+                    //console.log(arrayOfPromises)
+                    Promise.all(arrayOfPromises)
+                        .then((items)=>{
+                            menu.items = items
+                            resolve(menu)
+                        })
+                })
+            })
         }else{
             return new Promise((resolve,reject)=>{
                 db.run('INSERT INTO menus(title,restaurant_id) VALUES (?,?);',[menu.title,menu.restaurant_id],function(err){
@@ -67,6 +78,10 @@ class Menu{
                 })
             })
         }
+    }
+    async addItem(data){
+        const item =  await new Item({item:data.item,price:data.price,menu_id:this.id})
+        this.items.push(item)
     }
 }
 
