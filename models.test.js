@@ -41,11 +41,11 @@ describe('restaurant tests',() =>{
 
     test('item is created it is added to the db',async ()=>{
         const item = await new Item({item:'neck oil',menu_id:1,price:4.20})
-        //console.log(item)
-        expect(item.id).toBe(1)
+        //console.log(item.id)
+        expect(item.id).toEqual(1)
 
     })
-    test('get an item and from row',async ()=>{
+    test('get an item from row',async ()=>{
         db.get('SELECT * FROM items WHERE id=1;', async(err,row)=>{
             const itemRow = await new Item(row)
             expect(row.item).toBe("neck oil")
@@ -59,8 +59,8 @@ describe('restaurant tests',() =>{
         //console.log(item2)
         db.get('SELECT * FROM items WHERE id = 2;', async(err,row)=>{
             const item2row = await new Item(row)
-            //console.log(item2row)
-            expect(row.price).toBe(3.7)
+
+            expect(item2row.price).toBe(3.7)
             done()
         })
     })
@@ -89,9 +89,10 @@ describe('restaurant tests',() =>{
         await restaurant.addMenu({title:'Main'})
 
         db.get('SELECT * FROM restaurants WHERE id = ?', [restaurant.id],async (err,row) =>{
-            console.log(row)
+            //console.log(row)
             const ricenpot = await new Restaurant(row)
             expect(ricenpot.id).toBe(restaurant.id)
+            //console.log(ricenpot)
             expect(ricenpot.menus[0] instanceof Menu).toBeTruthy()
             done()
         })

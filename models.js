@@ -14,10 +14,11 @@ class Restaurant{
         if(this.id){
             return new Promise((resolve,reject)=>{
                 db.all('SELECT * FROM menus WHERE restaurant_id=?',[restaurant.id],(err,rows) =>{
-                    const arrayOfPromises = [rows.map(row => new Menu(row))]
+                    const arrayOfPromises = rows.map(row => new Menu(row))
                     console.log(arrayOfPromises)
                     Promise.all(arrayOfPromises)
-                        .then(menus =>{
+                        .then((menus) =>{
+                            console.log(menus)
                             restaurant.menus = menus
                             resolve(restaurant)
                         }).catch(err=> reject(err))
