@@ -73,12 +73,6 @@ describe('restaurant tests',() =>{
             done()
         })
     })
-    test('can count the number of items on a menu',async(done)=>{
-        db.get('SELECT title, COUNT(item) FROM menus JOIN items ON menus.id=items.menu_id;',(err,out)=>{
-            //console.log(out)
-            done()
-        })
-    })
     test('a restaurant should have menus',async (done)=>{
         const restaurant = await new Restaurant({name:'rice-n-pot',image:'image.url'})
         expect(restaurant.menus.length).toBe(0)
